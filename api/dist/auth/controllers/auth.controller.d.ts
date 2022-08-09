@@ -5,4 +5,7 @@ export declare class AuthController {
     private authService;
     constructor(authService: AuthService);
     register(user: User): Observable<User>;
+    login(user: User): Observable<{
+        token: string;
+    }>;
 }

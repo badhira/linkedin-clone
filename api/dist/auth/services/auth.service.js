@@ -20,9 +20,11 @@ const operators_1 = require("rxjs/operators");
 const from_1 = require("rxjs/internal/observable/from");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("../models/user.entity");
+const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
-    constructor(userRepository) {
+    constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
     hashPassword(password) {
         return (0, from_1.from)(bcrypt.hash(password, 12));
@@ -43,11 +45,32 @@ let AuthService = class AuthService {
             }));
         }));
     }
+    validateUser(email, password) {
+        return (0, from_1.from)(this.userRepository.findOne({
+            email,
+        }, {
+            select: ['id', 'firstName', 'lastName', 'email', 'password', 'role'],
+        })).pipe((0, operators_1.switchMap)((user) => (0, from_1.from)(bcrypt.compare(password, user.password)).pipe((0, operators_1.map)((isValidPassword) => {
+            if (isValidPassword) {
+                delete user.password;
+                return user;
+            }
+        }))));
+    }
+    login(user) {
+        const { email, password } = user;
+        return this.validateUser(email, password).pipe((0, operators_1.switchMap)((user) => {
+            if (user) {
+                return (0, from_1.from)(this.jwtService.signAsync({ user }));
+            }
+        }));
+    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

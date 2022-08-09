@@ -23,6 +23,11 @@ let AuthController = class AuthController {
     register(user) {
         return this.authService.registerAccount(user);
     }
+    login(user) {
+        return this.authService
+            .login(user)
+            .pipe((0, rxjs_1.map)((jwt) => ({ token: jwt })));
+    }
 };
 __decorate([
     (0, common_1.Post)('register'),
@@ -31,6 +36,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", rxjs_1.Observable)
 ], AuthController.prototype, "register", null);
+__decorate([
+    (0, common_1.Post)('login'),
+    __param(0, common_1.Body),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", rxjs_1.Observable)
+], AuthController.prototype, "login", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

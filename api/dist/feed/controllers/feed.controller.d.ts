@@ -6,7 +6,7 @@ export declare class FeedController {
     private feedService;
     feedPostRepository: any;
     constructor(feedService: FeedService);
-    create(feedPost: FeedPost): Observable<FeedPost>;
+    create(feedPost: FeedPost, req: any): Observable<FeedPost>;
     findSelected(take?: number, skip?: number): Observable<FeedPost[]>;
     update(id: number, feedPost: FeedPost): Observable<UpdateResult>;
     delete(id: number): Observable<DeleteResult>;
