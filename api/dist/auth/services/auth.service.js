@@ -46,9 +46,7 @@ let AuthService = class AuthService {
         }));
     }
     validateUser(email, password) {
-        return (0, from_1.from)(this.userRepository.findOne({
-            email,
-        }, {
+        return (0, from_1.from)(this.userRepository.findOneOptions({ email }, {
             select: ['id', 'firstName', 'lastName', 'email', 'password', 'role'],
         })).pipe((0, operators_1.switchMap)((user) => (0, from_1.from)(bcrypt.compare(password, user.password)).pipe((0, operators_1.map)((isValidPassword) => {
             if (isValidPassword) {
